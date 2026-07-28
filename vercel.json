@@ -4,7 +4,11 @@
   "outputDirectory": "dist/public",
   "rewrites": [
     {
-      "source": "/((?!assets/|favicon.ico|robots.txt).*)",
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
+    },
+    {
+      "source": "/((?!assets/|manus-storage/|favicon.ico|robots.txt).*)",
       "destination": "/index.html"
     }
   ]

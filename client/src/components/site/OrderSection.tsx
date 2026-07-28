@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Loader2, Camera, Send, RotateCcw, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { trpc } from "@/lib/trpc";
 import {
   CAKE_FLAVORS,
   CAKE_SIZES,
@@ -30,6 +29,13 @@ import {
 type StepId = "producto" | "detalle" | "sabor" | "deco" | "fecha" | "datos" | "resumen" | "listo";
 const PROGRESS: Record<StepId, number> = {
   producto: 14, detalle: 28, sabor: 42, deco: 56, fecha: 70, datos: 84, resumen: 100, listo: 100,
+};
+
+type AvailabilityDate = {
+  date: string;
+  remaining: number;
+  selectable: boolean;
+  reason: "tooSoon" | "full" | null;
 };
 const STEP_NUM: Record<StepId, string> = {
   producto: "01", detalle: "02", sabor: "03", deco: "04", fecha: "05", datos: "06", resumen: "07", listo: "07",
@@ -106,12 +112,31 @@ export default function OrderSection() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
 
-  const availability = trpc.ordering.availability.useQuery(undefined, {
-    refetchOnWindowFocus: false,
-  });
-  const uploadPhotos = trpc.ordering.uploadPhotos.useMutation();
-  const submitOrder = trpc.ordering.submit.useMutation();
-  const utils = trpc.useUtils();
+  const [availability, setAvailability] = useState<AvailabilityDate[]>([]);
+  const [availabilityLoading, setAvailabilityLoading] = useState(true);
+  const [availabilityError, setAvailabilityError] = useState(false);
+  const [uploadingPhotos, setUploadingPhotos] = useState(false);
+  const [submittingOrder, setSubmittingOrder] = useState(false);
+
+  async function refreshAvailability() {
+    setAvailabilityLoading(true);
+    setAvailabilityError(false);
+    try {
+      const response = await fetch("/api/availability");
+      const data = await response.json();
+      if (!response.ok) throw new Error(data?.error || "No pudimos cargar las fechas.");
+      setAvailability(data.dates ?? data);
+    } catch (error) {
+      console.error(error);
+      setAvailabilityError(true);
+    } finally {
+      setAvailabilityLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    refreshAvailability();
+  }, []);
 
   const total = useMemo(() => {
     if (order.productType === "churros") {
@@ -147,7 +172,7 @@ export default function OrderSection() {
     setWaMessage("");
     setHistory(["producto"]);
     setStep("producto");
-    utils.ordering.availability.invalidate();
+    refreshAvailability();
     scrollTop();
   };
 
@@ -224,51 +249,53 @@ export default function OrderSection() {
     try {
       let photoUrls: string[] = [];
       if (files.length > 0) {
-        const photos = await Promise.all(
-          files.map(
-            f =>
-              new Promise<{ name: string; mimeType: string; dataBase64: string }>((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => {
-                  const result = reader.result as string;
-                  resolve({ name: f.name, mimeType: f.type || "image/jpeg", dataBase64: result.split(",")[1] });
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(f);
-              }),
-          ),
-        );
-        const uploaded = await uploadPhotos.mutateAsync({ photos });
-        photoUrls = uploaded.urls;
+        setUploadingPhotos(true);
+        const form = new FormData();
+        files.forEach(file => form.append("photos", file));
+        const response = await fetch("/api/photos", { method: "POST", body: form });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data?.error || "No pudimos subir las fotos.");
+        photoUrls = data.links ?? data.urls ?? [];
       }
-      const result = await submitOrder.mutateAsync({
-        productType: order.productType!,
-        item: order.item,
-        quantity: order.quantity,
-        flavor: order.flavor || undefined,
-        filling: order.filling || undefined,
-        decoration: order.decoration || undefined,
-        occasion: order.occasion || undefined,
-        deliveryDate: order.date,
-        customerName: order.name.trim(),
-        customerPhone: order.phone.trim(),
-        notes: order.notes || undefined,
-        photoUrls,
-        estimatedTotal: total,
+      setUploadingPhotos(false);
+      setSubmittingOrder(true);
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productType: order.productType!,
+          item: order.item,
+          quantity: order.quantity,
+          flavor: order.flavor || undefined,
+          filling: order.filling || undefined,
+          decoration: order.decoration || undefined,
+          occasion: order.occasion || undefined,
+          deliveryDate: order.date,
+          customerName: order.name.trim(),
+          customerPhone: order.phone.trim(),
+          notes: order.notes || undefined,
+          photoUrls,
+          estimatedTotal: total,
+        }),
       });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result?.error || "No se pudo enviar el pedido.");
       setWhatsAppUrl(result.whatsAppUrl);
       setWaMessage(result.message);
       window.open(result.whatsAppUrl, "_blank");
-      utils.ordering.availability.invalidate();
+      refreshAvailability();
       go("listo");
     } catch (err) {
       const message = err instanceof Error ? err.message : "No se pudo enviar el pedido.";
       toast.error(message);
-      utils.ordering.availability.invalidate();
+      refreshAvailability();
+    } finally {
+      setUploadingPhotos(false);
+      setSubmittingOrder(false);
     }
   };
 
-  const sending = uploadPhotos.isPending || submitOrder.isPending;
+  const sending = uploadingPhotos || submittingOrder;
   const selectedFlavor = CAKE_FLAVORS.find(f => f.name === order.flavor);
 
   return (
@@ -568,17 +595,17 @@ export default function OrderSection() {
               title="¿Cuándo lo necesitas?"
               sub="Entregas sábados y domingos · mínimo 4 días de anticipación."
             />
-            {availability.isLoading ? (
+            {availabilityLoading ? (
               <div className="flex justify-center py-8">
                 <Loader2 className="h-6 w-6 animate-spin text-sage-deep" />
               </div>
-            ) : availability.isError ? (
+            ) : availabilityError ? (
               <p className="py-6 text-center text-sm text-destructive">
                 No pudimos cargar las fechas. Intenta de nuevo en un momento.
               </p>
             ) : (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {availability.data?.map(d => (
+                {availability.map(d => (
                   <OptionCard
                     key={d.date}
                     title={dateLabel(d.date).split(" ")[0]}
@@ -693,7 +720,7 @@ export default function OrderSection() {
                 {sending ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    {uploadPhotos.isPending ? "Subiendo fotos…" : "Enviando…"}
+                    {uploadingPhotos ? "Subiendo fotos…" : "Enviando…"}
                   </>
                 ) : (
                   <>
