@@ -31,7 +31,10 @@ export default function Footer() {
         </a>
       </p>
       <p className="mt-4 text-[0.76rem] opacity-70">
-        Sitio por Salt &amp; Tide Creative
+        Sitio por Salt &amp; Tide Creative ·{" "}
+        <a href="/admin" className="underline underline-offset-2 hover:opacity-100">
+          Admin
+        </a>
       </p>
     </footer>
   );

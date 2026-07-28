@@ -40,3 +40,12 @@
 - [x] Mobile-first responsive check (375px) + desktop check
 - [x] End-to-end browser test: full order flow with photo upload, DB persistence verified, test data cleaned
 - [x] Save checkpoint & deliver
+
+## Admin Page (Diana)
+- [x] Backend: adminProcedure (role-gated), list orders query, update order status mutation
+- [x] Admin page at /admin: orders grouped/filtered by status (pendiente/confirmado/cancelado), order details incl. photos
+- [x] Confirm / cancel actions; cancelled orders free capacity (already excluded from counts via status != cancelled)
+- [x] Availability summary showing slots used per upcoming weekend date
+- [x] Login gate + access denied state for non-admins; link discreetly in footer
+- [x] Vitest tests for admin procedures (auth gating + status updates) — 22 tests passing total
+- [x] Test in browser, checkpoint, deliver

@@ -116,3 +116,20 @@ export async function createOrder(order: InsertOrder): Promise<number> {
   const result = await db.insert(orders).values(order);
   return result[0].insertId;
 }
+
+/** All orders, newest first */
+export async function listOrders() {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.select().from(orders).orderBy(sql`${orders.createdAt} DESC`);
+}
+
+export async function updateOrderStatus(
+  orderId: number,
+  status: "pending" | "confirmed" | "cancelled",
+): Promise<boolean> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.update(orders).set({ status }).where(eq(orders.id, orderId));
+  return result[0].affectedRows > 0;
+}
