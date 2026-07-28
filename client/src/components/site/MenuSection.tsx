@@ -1,6 +1,60 @@
 import { ASSETS } from "@/lib/assets";
 import { DOCENA_ITEMS } from "@shared/orders";
 
+/** Photos for docena items — real Sweet Vanilla product shots from Instagram/repo */
+const DOCENA_PHOTOS: Record<string, { img: string; alt: string; desc: string }> = {
+  gelatinas: {
+    img: ASSETS.napolitanoFlan,
+    alt: "Mesa de postres con gelatinas y flan Sweet Vanilla",
+    desc: "Suaves y coloridas, favoritas en toda mesa de postres.",
+  },
+  flan: {
+    img: ASSETS.napolitanoFlan,
+    alt: "Mini flan napolitano Sweet Vanilla",
+    desc: "Nuestro flan napolitano cremoso en porción individual.",
+  },
+  chocoflan: {
+    img: ASSETS.chocoflan,
+    alt: "Chocoflan corazón Sweet Vanilla",
+    desc: "La combinación perfecta de pastel de chocolate y flan.",
+  },
+  cupcakes: {
+    img: ASSETS.sprinkleBirthdayCake,
+    alt: "Cupcakes decorados Sweet Vanilla",
+    desc: "Decorados a juego con el tema de tu celebración.",
+  },
+  cakepops: {
+    img: ASSETS.fresasArreglo,
+    alt: "Arreglo dulce estilo Sweet Vanilla",
+    desc: "Bocaditos de pastel cubiertos de chocolate.",
+  },
+  popsicle: {
+    img: ASSETS.flanNapolitano,
+    alt: "Postre corazón decorado Sweet Vanilla",
+    desc: "Cake pops estilo paleta, ideales para mesas de dulces.",
+  },
+  churrocheesecake: {
+    img: ASSETS.churrosMenu,
+    alt: "Churros con toppings Sweet Vanilla",
+    desc: "Cheesecake con el toque crujiente de canela del churro.",
+  },
+  moussecheesecake: {
+    img: ASSETS.strawberriesCreamCup,
+    alt: "Vasito de mousse Sweet Vanilla",
+    desc: "Mousse de cheesecake servido en vasito individual.",
+  },
+  mousseoreo: {
+    img: ASSETS.blackGoldCake,
+    alt: "Postre de chocolate Sweet Vanilla",
+    desc: "Capas de mousse de Oreo con pudín de chocolate.",
+  },
+  gelatinamosaico: {
+    img: ASSETS.boxedSweetCrepe,
+    alt: "Postres en vasito Sweet Vanilla",
+    desc: "Gelatina mosaico cremosa servida en vasito.",
+  },
+};
+
 const FLAVOR_CARDS = [
   {
     tag: "CLÁSICO",
@@ -31,17 +85,47 @@ const FLAVOR_CARDS = [
     name: "Moca Cookie Crumble",
     desc: "Vainilla húmeda en moca, relleno de mousse de chocolate y crumbles de Oreo.",
     price: "Desde $80",
-    img: ASSETS.blackGoldCake,
-    alt: "Pastel moca cookie crumble blanco y negro",
+    img: ASSETS.mochaCake,
+    alt: "Pastel moca cookie crumble Sweet Vanilla",
   },
 ];
 
-const EXTRA_ROWS: Array<[string, string]> = [
-  ["Churros con toppings (por box, 1 topping)", "$8 · +$2 extra"],
-  ["Porción de pastel — vainilla con dulce de leche", "$8"],
-  ["Porción de pastel — triple chocolate especial", "$10"],
-  ["Crepas dulces (cada dos viernes)", "Precio por confirmar"],
-  ["Fresas con crema (de temporada)", "Precio por confirmar"],
+const ANTOJITOS = [
+  {
+    name: "Churros con toppings",
+    desc: "Box de churros recién hechos con 1 topping: Nutella, leche condensada o dulce de leche.",
+    price: "$8 por box · +$2 topping extra",
+    img: ASSETS.churrosMenu,
+    alt: "Box de churros con toppings Sweet Vanilla",
+  },
+  {
+    name: "Porción de pastel — vainilla con dulce de leche",
+    desc: "Rebanada individual de nuestro tres leches tradicional.",
+    price: "$8",
+    img: ASSETS.marcBirthdayCake,
+    alt: "Porción de pastel de vainilla Sweet Vanilla",
+  },
+  {
+    name: "Porción de pastel — triple chocolate especial",
+    desc: "Rebanada de triple chocolate con dulce de leche.",
+    price: "$10",
+    img: ASSETS.blackGoldCake,
+    alt: "Porción de pastel triple chocolate Sweet Vanilla",
+  },
+  {
+    name: "Crepas dulces",
+    desc: "Disponibles cada dos viernes, con toppings a elegir.",
+    price: "Precio por confirmar",
+    img: ASSETS.sweetCrepe,
+    alt: "Crepa dulce Sweet Vanilla",
+  },
+  {
+    name: "Fresas con crema",
+    desc: "De temporada, servidas en vaso con crema casera.",
+    price: "Precio por confirmar",
+    img: ASSETS.strawberriesCreamCup,
+    alt: "Vaso de fresas con crema Sweet Vanilla",
+  },
 ];
 
 export default function MenuSection() {
@@ -91,39 +175,66 @@ export default function MenuSection() {
         </p>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-secondary bg-card">
-        <table className="w-full border-collapse text-left">
-          <thead>
-            <tr>
-              <th className="bg-primary px-4 py-3 font-display text-[0.95rem] font-normal text-primary-foreground">
-                Producto
-              </th>
-              <th className="bg-primary px-4 py-3 text-right font-display text-[0.95rem] font-normal text-primary-foreground">
-                Precio
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {DOCENA_ITEMS.map(item => (
-              <tr key={item.id}>
-                <td className="border-t border-secondary px-4 py-2.5 text-[0.9rem]">
-                  {item.name} ({item.units} unidades)
-                </td>
-                <td className="whitespace-nowrap border-t border-secondary px-4 py-2.5 text-right text-[0.9rem] font-bold text-caramel">
-                  ${item.price}
-                </td>
-              </tr>
-            ))}
-            {EXTRA_ROWS.map(([name, price]) => (
-              <tr key={name}>
-                <td className="border-t border-secondary px-4 py-2.5 text-[0.9rem]">{name}</td>
-                <td className="whitespace-nowrap border-t border-secondary px-4 py-2.5 text-right text-[0.9rem] font-bold text-caramel">
-                  {price}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {DOCENA_ITEMS.map(item => {
+          const photo = DOCENA_PHOTOS[item.id];
+          return (
+            <article
+              key={item.id}
+              className="group flex overflow-hidden rounded-2xl border border-secondary bg-card transition-shadow duration-200 hover:shadow-[0_10px_30px_rgba(62,90,60,0.12)]">
+              <div className="h-28 w-28 shrink-0 overflow-hidden bg-secondary">
+                <img
+                  src={photo.img}
+                  alt={photo.alt}
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.05]"
+                  loading="lazy"
+                />
+              </div>
+              <div className="flex min-w-0 flex-col justify-center gap-0.5 p-4">
+                <h3 className="font-display text-[1.02rem] font-semibold leading-snug text-primary">
+                  {item.name}
+                </h3>
+                <p className="text-[0.78rem] leading-snug text-muted-foreground">{photo.desc}</p>
+                <p className="mt-1 text-[0.88rem] font-bold text-caramel">
+                  ${item.price} <span className="font-normal text-muted-foreground">· {item.units} unidades</span>
+                </p>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      <div className="mb-8 mt-16 text-center">
+        <h2 className="font-display text-[clamp(1.7rem,4vw,2.2rem)] font-normal text-primary">
+          Antojitos
+        </h2>
+        <p className="mt-2 text-[0.95rem] text-muted-foreground">
+          Porciones individuales y antojos de temporada
+        </p>
+      </div>
+
+      <div className="grid gap-5 sm:grid-cols-2">
+        {ANTOJITOS.map(item => (
+          <article
+            key={item.name}
+            className="group flex overflow-hidden rounded-2xl border border-secondary bg-card transition-shadow duration-200 hover:shadow-[0_10px_30px_rgba(62,90,60,0.12)]">
+            <div className="h-28 w-28 shrink-0 overflow-hidden bg-secondary">
+              <img
+                src={item.img}
+                alt={item.alt}
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.05]"
+                loading="lazy"
+              />
+            </div>
+            <div className="flex min-w-0 flex-col justify-center gap-0.5 p-4">
+              <h3 className="font-display text-[1.02rem] font-semibold leading-snug text-primary">
+                {item.name}
+              </h3>
+              <p className="text-[0.78rem] leading-snug text-muted-foreground">{item.desc}</p>
+              <p className="mt-1 text-[0.88rem] font-bold text-caramel">{item.price}</p>
+            </div>
+          </article>
+        ))}
       </div>
       <p className="mt-3 text-center text-[0.82rem] text-muted-foreground">
         * El precio de los pasteles puede variar según la decoración, el tamaño y el relleno.

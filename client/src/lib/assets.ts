@@ -10,4 +10,10 @@ export const ASSETS = {
   sprinkleBirthdayCake: "/manus-storage/sprinkle-birthday-cake_1bb478fa.webp",
   strawberriesCreamCup: "/manus-storage/strawberries-cream-cup_ffb8f2fa.webp",
   sweetCrepe: "/manus-storage/sweet-crepe_e588ccef.webp",
+  // Cropped from Sweet Vanilla Instagram (@sweet_vanilla2025) posts
+  chocoflan: "/manus-storage/chocoflan_d3228cfb.jpg",
+  flanNapolitano: "/manus-storage/flan_napolitano_a306b313.jpg",
+  fresasArreglo: "/manus-storage/fresas_arreglo_868068ce.jpg",
+  mochaCake: "/manus-storage/mocha_cake_92ba6693.jpg",
+  heartVintageCake: "/manus-storage/heart_vintage_cake_82af9630.jpg",
 } as const;

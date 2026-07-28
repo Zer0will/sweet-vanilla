@@ -49,3 +49,11 @@
 - [x] Login gate + access denied state for non-admins; link discreetly in footer
 - [x] Vitest tests for admin procedures (auth gating + status updates) — 22 tests passing total
 - [x] Test in browser, checkpoint, deliver
+
+## Visual Menu (Instagram photos)
+- [x] Browse @sweet_vanilla2025 Instagram and screenshot/collect product photos for docena/churros items (12 recent posts + Mother's Day flyer crops; older posts inaccessible without login)
+- [x] Crop/prepare photos, upload via manus-upload-file --webdev
+- [x] Rebuild "Por docena y más" price table as a visual menu with photo cards per item
+- [x] Add "Antojitos" visual section (churros, porciones, crepas, fresas con crema)
+- [x] Update Moca Cookie Crumble flavor card with the real mocha cake photo from IG
+- [x] Verify responsive layout, tests pass (22), checkpoint, deliver
