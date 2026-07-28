@@ -25,4 +25,29 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+/**
+ * Customer orders submitted through the guided order flow.
+ * `deliveryDate` is stored as YYYY-MM-DD (delivery day, weekend only).
+ * Capacity rule: max 5 orders per deliveryDate (pending + confirmed count).
+ */
+export const orders = mysqlTable("orders", {
+  id: int("id").autoincrement().primaryKey(),
+  productType: mysqlEnum("productType", ["pastel", "docena", "churros"]).notNull(),
+  item: varchar("item", { length: 191 }).notNull(),
+  quantity: int("quantity").default(1).notNull(),
+  flavor: varchar("flavor", { length: 191 }),
+  filling: varchar("filling", { length: 191 }),
+  decoration: text("decoration"),
+  occasion: varchar("occasion", { length: 191 }),
+  deliveryDate: varchar("deliveryDate", { length: 10 }).notNull(),
+  customerName: varchar("customerName", { length: 191 }).notNull(),
+  customerPhone: varchar("customerPhone", { length: 32 }).notNull(),
+  notes: text("notes"),
+  photoUrls: text("photoUrls"), // JSON array of public S3 URLs
+  estimatedTotal: int("estimatedTotal").notNull(),
+  status: mysqlEnum("status", ["pending", "confirmed", "cancelled"]).default("pending").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type Order = typeof orders.$inferSelect;
+export type InsertOrder = typeof orders.$inferInsert;

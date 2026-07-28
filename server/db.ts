@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { and, inArray, ne, sql } from "drizzle-orm";
+import { InsertOrder, InsertUser, orders, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +90,29 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+/**
+ * Count active (non-cancelled) orders per delivery date for the given date keys.
+ * Returns a map of dateKey -> count.
+ */
+export async function getOrderCountsByDate(dateKeys: string[]): Promise<Record<string, number>> {
+  const db = await getDb();
+  if (!db || dateKeys.length === 0) return {};
+  const rows = await db
+    .select({
+      deliveryDate: orders.deliveryDate,
+      count: sql<number>`count(*)`,
+    })
+    .from(orders)
+    .where(and(inArray(orders.deliveryDate, dateKeys), ne(orders.status, "cancelled")))
+    .groupBy(orders.deliveryDate);
+  const map: Record<string, number> = {};
+  for (const r of rows) map[r.deliveryDate] = Number(r.count);
+  return map;
+}
+
+export async function createOrder(order: InsertOrder): Promise<number> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(orders).values(order);
+  return result[0].insertId;
+}
