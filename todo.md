@@ -57,3 +57,9 @@
 - [x] Add "Antojitos" visual section (churros, porciones, crepas, fresas con crema)
 - [x] Update Moca Cookie Crumble flavor card with the real mocha cake photo from IG
 - [x] Verify responsive layout, tests pass (22), checkpoint, deliver
+
+## Restyle to match uploaded reference (sweet-vanilla-site.zip)
+- [x] Extract zip, review reference CSS/HTML styling (colors, fonts, spacing, components)
+- [x] Update index.css theme tokens + fonts to match reference (cream/sage/cocoa/clay palette, Cormorant Garamond + Manrope)
+- [x] Restyle components (nav, hero, menu, gallery, policies, pickup, order flow, footer) to match
+- [x] Verify desktop + mobile screenshots, 22 tests pass, checkpoint, deliver

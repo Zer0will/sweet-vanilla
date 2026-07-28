@@ -1,4 +1,3 @@
-import Nav from "@/components/site/Nav";
 import Hero from "@/components/site/Hero";
 import MenuSection from "@/components/site/MenuSection";
 import GallerySection from "@/components/site/GallerySection";
@@ -10,7 +9,6 @@ import Footer from "@/components/site/Footer";
 export default function Home() {
   return (
     <div className="min-h-screen">
-      <Nav />
       <main>
         <Hero />
         <MenuSection />
@@ -23,4 +21,3 @@ export default function Home() {
     </div>
   );
 }
-

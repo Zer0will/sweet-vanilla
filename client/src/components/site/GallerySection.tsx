@@ -1,50 +1,83 @@
+import { ArrowUpRight, Instagram } from "lucide-react";
 import { ASSETS } from "@/lib/assets";
 import { INSTAGRAM_HANDLE, INSTAGRAM_URL } from "@shared/orders";
 
 const GALLERY = [
-  { img: ASSETS.hero, caption: "Pastel blanco y negro", alt: "Pastel blanco y negro con topper dorado" },
-  { img: ASSETS.blackGoldCake, caption: "Pastel personalizado", alt: "Pastel personalizado negro con esferas doradas" },
-  { img: ASSETS.strawberriesCreamCup, caption: "Fresas con crema", alt: "Fresas con crema en vaso" },
-  { img: ASSETS.sweetCrepe, caption: "Crepas dulces", alt: "Crepa dulce con Nutella, fresas y banana" },
-  { img: ASSETS.churrosMenu, caption: "Churros + porciones", alt: "Churros con toppings y porciones de pastel" },
-  { img: ASSETS.napolitanoFlan, caption: "Mini flan", alt: "Mini flanes napolitanos en mesa de fiesta" },
-  { img: ASSETS.marcBirthdayCake, caption: "Pastel de cumpleaños", alt: "Pastel de cumpleaños con letras azules" },
-  { img: ASSETS.sprinkleBirthdayCake, caption: "Sprinkles y color", alt: "Pastel con sprinkles de colores" },
-  { img: ASSETS.boxedSweetCrepe, caption: "Pick up listo", alt: "Crepa dulce empacada para pick up" },
+  {
+    img: ASSETS.hero,
+    caption: "Pasteles personalizados",
+    alt: "Pastel blanco y negro con topper dorado",
+    className: "md:row-span-2 row-span-2",
+  },
+  {
+    img: ASSETS.strawberriesCreamCup,
+    caption: "Fresas con crema",
+    alt: "Fresas con crema en vaso",
+    className: "",
+  },
+  {
+    img: ASSETS.sweetCrepe,
+    caption: "Crepas dulces",
+    alt: "Crepa dulce con Nutella, fresas y banana",
+    className: "",
+  },
+  {
+    img: ASSETS.napolitanoFlan,
+    caption: "Mini flan",
+    alt: "Mini flanes napolitanos en mesa de fiesta",
+    className: "md:col-span-2 col-span-2",
+  },
+  {
+    img: ASSETS.sprinkleBirthdayCake,
+    caption: "Celebraciones",
+    alt: "Pastel con sprinkles de colores",
+    className: "",
+  },
+  {
+    img: ASSETS.churrosMenu,
+    caption: "Churros con toppings",
+    alt: "Churros con toppings y porciones de pastel",
+    className: "",
+  },
 ];
 
 export default function GallerySection() {
   return (
-    <section id="galeria" className="bg-primary px-5 py-16">
-      <div className="mx-auto max-w-5xl">
-        <div className="mb-10 text-center">
-          <h2 className="font-display text-[clamp(1.7rem,4vw,2.2rem)] font-normal text-primary-foreground">
-            Galería
+    <section id="galeria" className="overflow-hidden bg-cocoa py-[clamp(88px,10vw,156px)] text-background">
+      <div className="mx-auto w-[min(100%-40px,1380px)] md:w-[min(100%-80px,1380px)]">
+        <div className="mb-12 grid items-end gap-6 md:mb-16 md:grid-cols-[1fr_auto] md:gap-10">
+          <p className="eyebrow !text-sage md:col-span-2">Hecho por Sweet Vanilla</p>
+          <h2 className="display-xl max-w-[780px] text-[clamp(3rem,12vw,4.7rem)] md:text-[clamp(3rem,5.4vw,5.8rem)]">
+            Cada creación cuenta una historia distinta.
           </h2>
-          <p className="mt-2 text-[0.95rem] text-primary-foreground/80">
-            Cada creación es única — síguenos en Instagram{" "}
-            <a
-              href={INSTAGRAM_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="font-bold underline decoration-2 underline-offset-4 hover:text-white">
-              {INSTAGRAM_HANDLE}
-            </a>
-          </p>
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="mb-2 inline-flex items-center gap-2 justify-self-start border-b border-current pb-1 text-[0.82rem] font-bold text-sage no-underline">
+            <Instagram className="h-[18px] w-[18px]" />
+            {INSTAGRAM_HANDLE}
+          </a>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+
+        <div className="grid grid-cols-2 gap-[18px] md:min-h-[920px] md:grid-cols-3 md:grid-rows-2">
           {GALLERY.map(g => (
             <figure
               key={g.caption}
-              className="group relative aspect-square overflow-hidden rounded-2xl bg-white/10 shadow-[0_18px_40px_rgba(0,0,0,0.18)]">
+              className={`group relative m-0 min-h-[220px] overflow-hidden rounded-3xl bg-[#59443c] md:min-h-[340px] ${g.className}`}>
               <img
                 src={g.img}
                 alt={g.alt}
-                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-[800ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.045]"
                 loading="lazy"
               />
-              <figcaption className="absolute inset-x-2.5 bottom-2.5 rounded-full bg-background/90 px-2.5 py-1.5 text-center text-[0.76rem] font-bold text-primary">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 bottom-0 top-1/2 bg-gradient-to-b from-transparent to-[rgba(32,21,17,0.55)]"
+              />
+              <figcaption className="absolute inset-x-4 bottom-4 z-[2] flex items-center justify-between font-display text-[1rem] md:inset-x-5 md:bottom-[18px] md:text-[1.25rem]">
                 {g.caption}
+                <ArrowUpRight className="h-5 w-5" strokeWidth={1.3} />
               </figcaption>
             </figure>
           ))}
