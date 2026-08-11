@@ -65,6 +65,7 @@ function requireSameOriginForMutations(req: Request, res: Response, next: NextFu
 
 async function startServer() {
   const app = express();
+  app.disable("x-powered-by");
   const server = createServer(app);
   app.set("trust proxy", 1);
   app.use(applySecurityHeaders);
